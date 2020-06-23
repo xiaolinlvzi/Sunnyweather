@@ -1,6 +1,7 @@
 package com.sunnyweather.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.sunnyweather.android.util.Utility;
 
 
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,38 +39,23 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-    public ProgressDialog progressDialog;//这个已经过时
+    public ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
     private ListView listView;
     private ArrayAdapter<String>adapter;
     private List<String> dataList = new ArrayList<>();
-
     /**
      * 省列表
      */
     private List<Province> provinceList;
-
-    /**
-     * 市列表
-     */
     private List<City> cityList;
-
-    /**
-     * 县列表
-     */
     private List<County> countyList;
-
     /**
      * 选中的省份
      */
     private Province selectedProvince;
-
-    /**
-     * 选中的城市
-     */
     private City selectedCity;
-
     /**
      * 当前选中的级别
      */
@@ -96,9 +83,16 @@ public class ChooseAreaFragment extends Fragment {
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
-
-
+                }else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
                 }
+
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {

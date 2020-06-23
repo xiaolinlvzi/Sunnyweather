@@ -4,9 +4,11 @@ package com.sunnyweather.android.util;
 import android.text.TextUtils;
 
 
+import com.google.gson.Gson;
 import com.sunnyweather.android.db.City;
 import com.sunnyweather.android.db.County;
 import com.sunnyweather.android.db.Province;
+import com.sunnyweather.android.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,9 +16,7 @@ import org.json.JSONObject;
 
 
 public class Utility {
-    /**
-     * 解析服务器返回的省级数据
-     */
+    /**解析服务器返回的省级数据*/
     public static boolean handleProvinceResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
             try {
@@ -36,9 +36,7 @@ public class Utility {
         return false;
     }
 
-    /**
-     * 解析服务器返回的市级数据
-     */
+    /**解析服务器返回的市级数据*/
     public static boolean handleCityResponse(String response, int provinceId) {
         if (!TextUtils.isEmpty(response)) {
             try {
@@ -59,9 +57,7 @@ public class Utility {
         return false;
     }
 
-    /**
-     * 解析服务器返回的县级数据
-     */
+    /**解析服务器返回的县级数据*/
     public static boolean handleCountyResponse(String response, int cityId) {
         if (!TextUtils.isEmpty(response)) {
             try {
@@ -81,5 +77,18 @@ public class Utility {
         }
         return false;
     }
+
+    public static Weather handleWeatherResponse(String response){
+        try{
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
+            String weatherContent=jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
+
 
