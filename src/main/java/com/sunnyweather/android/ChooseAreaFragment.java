@@ -1,5 +1,4 @@
 package com.sunnyweather.android;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,24 +12,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.sunnyweather.android.db.City;
 import com.sunnyweather.android.db.County;
 import com.sunnyweather.android.db.Province;
 import com.sunnyweather.android.util.HttpUtil;
 import com.sunnyweather.android.util.Utility;
-
-
-
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import androidx.fragment.app.Fragment;
-
 import org.litepal.crud.DataSupport;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -74,12 +65,13 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+        //listviewd点击事件
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(currentLevel == LEVEL_PROVINCE){
                     selectedProvince = provinceList.get(position);
-                    queryCities();
+                    queryCities();       //查找城市
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
@@ -90,6 +82,12 @@ public class ChooseAreaFragment extends Fragment {
                         intent.putExtra("weather_id", weatherId);
                         startActivity(intent);
                         getActivity().finish();
+                    }
+                    else if(getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();   //关闭滑动菜单
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);    //请求天气信息
                     }
                 }
 
