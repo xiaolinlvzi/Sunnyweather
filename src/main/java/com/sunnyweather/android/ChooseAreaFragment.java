@@ -1,6 +1,6 @@
 package com.sunnyweather.android;
+
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,16 +12,23 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.sunnyweather.android.db.City;
 import com.sunnyweather.android.db.County;
 import com.sunnyweather.android.db.Province;
 import com.sunnyweather.android.util.HttpUtil;
 import com.sunnyweather.android.util.Utility;
+
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import androidx.fragment.app.Fragment;
+
 import org.litepal.crud.DataSupport;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -30,23 +37,38 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-    public ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;//这个已经过时
     private TextView titleText;
     private Button backButton;
     private ListView listView;
     private ArrayAdapter<String>adapter;
     private List<String> dataList = new ArrayList<>();
+
     /**
      * 省列表
      */
     private List<Province> provinceList;
+
+    /**
+     * 市列表
+     */
     private List<City> cityList;
+
+    /**
+     * 县列表
+     */
     private List<County> countyList;
+
     /**
      * 选中的省份
      */
     private Province selectedProvince;
+
+    /**
+     * 选中的城市
+     */
     private City selectedCity;
+
     /**
      * 当前选中的级别
      */
@@ -65,32 +87,18 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        //listviewd点击事件
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(currentLevel == LEVEL_PROVINCE){
                     selectedProvince = provinceList.get(position);
-                    queryCities();       //查找城市
+                    queryCities();
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
-                }else if (currentLevel == LEVEL_COUNTY) {
-                    String weatherId = countyList.get(position).getWeatherId();
-                    if (getActivity() instanceof MainActivity) {
-                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                        intent.putExtra("weather_id", weatherId);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                    else if(getActivity() instanceof WeatherActivity){
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.drawerLayout.closeDrawers();   //关闭滑动菜单
-                        activity.swipeRefresh.setRefreshing(true);
-                        activity.requestWeather(weatherId);    //请求天气信息
-                    }
-                }
 
+
+                }
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
