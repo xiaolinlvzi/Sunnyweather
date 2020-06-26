@@ -33,33 +33,20 @@ import com.sunnyweather.android.util.Utility;
 import org.jetbrains.annotations.NotNull;
 
 public class WeatherActivity extends AppCompatActivity {
-
     public DrawerLayout drawerLayout;
     private Button navButton;
-
     public SwipeRefreshLayout swipeRefresh;
     private ScrollView weatherLayout;
-
     private TextView titleCity;
-
     private TextView titleUpdateTime;
-
     private TextView degreeText;
-
     private TextView weatherInfoText;
-
     private LinearLayout forecastLayout;
-
     private TextView aqiText;
-
     private TextView pm25Text;
-
     private TextView comfortText;
-
     private TextView carWashText;
-
     private TextView sportText;
-
     private ImageView bingPicImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
