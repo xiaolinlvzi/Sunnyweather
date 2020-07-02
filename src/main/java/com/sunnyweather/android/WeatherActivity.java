@@ -7,6 +7,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import com.bumptech.glide.Glide;
 import com.sunnyweather.android.gson.Forecast;
 import com.sunnyweather.android.gson.Weather;
+import com.sunnyweather.android.service.AutoUpdateService;
 import com.sunnyweather.android.util.HttpUtil;
 import com.sunnyweather.android.util.Utility;
 
@@ -47,6 +50,7 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView comfortText;
     private TextView carWashText;
     private TextView sportText;
+
     private ImageView bingPicImg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,7 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherString = prefs.getString("weather", null);
         String bingPic=prefs.getString("bing_pic",null);
         if (bingPic!=null){
+            //有缓存数据就使用Glide来加载
             Glide.with(this).load(bingPic).into(bingPicImg);
         }else {
             loadBingPic();
@@ -100,7 +105,9 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             // 无缓存时去服务器查询天气
             weatherId = getIntent().getStringExtra("weather_id");
+            //在请求数据的时候将ScrollView隐藏
             weatherLayout.setVisibility(View.INVISIBLE);
+            //从服务器请求天气数据
             requestWeather(weatherId);
         }
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -188,7 +195,11 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        //AutUpDATEsERVICE就会一直在后台运行，并保证八个小时更新一次天气
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
+
     /**
      * 加载必应每日一图
      */
@@ -217,4 +228,3 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 }
-
